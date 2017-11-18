@@ -1,13 +1,12 @@
-var https = require('https');
+var http = require('http');
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-var httpsPort = 8090;
+var httpPort = 8090;
 var app = express();
 var mongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/taskDB";
-var fs = require("fs");
 
 
 
@@ -16,15 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-
-//init crypto
-var options = {
-   key  : fs.readFileSync('encryption/server.key'),
-   cert : fs.readFileSync('encryption/server.crt')
-};
-
-
 
 
 /*
@@ -47,14 +37,9 @@ var options = {
 //authorize access to public directory to server html, css, js
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.post('/getData', function(req, res) {
-    res.send({
-        dataFromServer: "Données du server"
-    });
-});
-
 
 app.post('/login', function(req, res) {
+	console.log("I got something");
     //declaration response part
     var succ = true;
     var errorSet = [];
@@ -69,7 +54,6 @@ app.post('/login', function(req, res) {
         errorSet.push("MISSING_PARAMS");
     }
     if (succ) {
-    	console.log(username+" "+password);
         if (username != "max" || password != "123") {
             succ = false;
             errorSet.push("USER_NOT_EXIST");
@@ -79,7 +63,7 @@ app.post('/login', function(req, res) {
     var link = "";
     if(succ){
     	console.log(succ);
-    	link = "http://127.0.01:8089/routing.html";
+    	link = "https://127.0.01:8089/routing.html";
     } 
     //send response
     res.send({
@@ -91,6 +75,6 @@ app.post('/login', function(req, res) {
 
 });
 
-https.createServer(options, app).listen(httpsPort, function () {
+http.createServer(app).listen(httpPort, function () {
    console.log('Started loginServeur!');
 });

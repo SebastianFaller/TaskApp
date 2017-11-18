@@ -5,10 +5,13 @@ var bodyParser = require('body-parser');
 var fs = require("fs");
 
 var httpsPort = 8089;
+var httpPort = 8092;
 var app = express();
 var mongoClient = require('mongodb').MongoClient;
 var axios = require("axios");
 
+
+var http = require("http");
 
 //initi parser
 app.use(bodyParser.json());
@@ -33,8 +36,10 @@ require("./taskServer");
 require("./loginServeur");
 
 app.post('/login', function(req, res) {
+	console.log("Something "+req.body);
 	axios.post("http://127.0.0.1:8090/login", req.body).then(
 		function(response) {
+				console.log("Hallo");
 			if(response.data.success){
 			console.log(response.data.hlink);
 				res.send(response.data);
@@ -42,7 +47,9 @@ app.post('/login', function(req, res) {
 		},
 		function(error) {
 			throw error;
-		});
+		}).catch(function(error){
+			console.log(error);
+	});
 });
 
 
@@ -83,3 +90,6 @@ axios.get("http://127.0.0.1:8091/gettasks").then(
 https.createServer(options, app).listen(httpsPort, function () {
    console.log('Started pilotServer!');
 });
+
+//for test purposes only
+//http.createServer(app).listen(httpPort);

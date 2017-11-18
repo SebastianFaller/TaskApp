@@ -1,13 +1,12 @@
-var https = require('https');
+var http = require('http');
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-var httpsPort = 8091;
+var httpPort = 8091;
 var app = express();
 var mongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/taskDB";
-var fs = require("fs");
 
 
 
@@ -16,14 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-
-//init crypto
-var options = {
-   key  : fs.readFileSync('encryption/server.key'),
-   cert : fs.readFileSync('encryption/server.crt')
-};
-
 
 
 app.post('/addtask', function(req, res) {
@@ -59,6 +50,7 @@ app.post("/deletetask", function(req, res){
 });
 
 app.get('/gettasks', function(req, res) {
+    console.log("entered taskserver gettasks")
     mongoClient.connect(url, function(err, db) {
         if (err) {
             throw err;
@@ -76,6 +68,6 @@ app.get('/gettasks', function(req, res) {
 });
 
 
-https.createServer(options, app).listen(httpsPort, function () {
+http.createServer(app).listen(httpPort, function () {
    console.log('Started taskServer!');
 });

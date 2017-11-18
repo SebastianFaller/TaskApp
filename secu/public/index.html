@@ -21,7 +21,6 @@
 			<label for="pwd">Password:</label>
 			<input ng-model="pwd" class="form-control" type="password" id="pwd" name="pwd" required/> 
 			<br>
-			<p>Test: {{name}}</p>
 			<div id="alert" class="alert alert-danger" style="display: none;">
 				<strong>Access denied!</strong> Password or username were incorrect.
 			</div>
@@ -86,11 +85,9 @@
 			var app = angular.module('MyLoginApp', []);
 			app.controller('LoginCtrl', ['$scope', '$http', '$window',function($scope, $http, $window) {
 				$scope.formSubmit = function(){
-					$http.post("/login", {name : $scope.name, pwd: $scope.pwd})
+					$http.post("https://localhost:8089/login/", {name : $scope.name, pwd: $scope.pwd})
 					.then(function(response) {
-						console.log(response.data.hlink);
 						$window.location.href = response.data.hlink;
-						console.log("Die antwort "+response);
 						if(!response.data.success){
 							$("#alert").fadeIn();
 						}
