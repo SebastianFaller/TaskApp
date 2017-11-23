@@ -1,0 +1,104 @@
+<!DOCTYPE>
+<html ng-app="MyLoginApp">
+<head>
+	<title>Login Page</title>
+	<link rel="stylesheet" href="styles/index.css"/>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+	<script type="text/javascript" src="./sjcl/sjcl.js"></script>
+</head>
+<body ng-controller="LoginCtrl">
+	<div id="loginform">
+		<h1>Login</h1>
+		<div class="form-group">
+			<label for="name">Name:</label>
+			<input ng-model="name" class="form-control" type="text" id="name" name="name" required/>
+		</div>
+		<div class="form-group">
+			<label for="pwd">Password:</label>
+			<input ng-model="pwd" class="form-control" type="password" id="pwd" name="pwd" required/> 
+			<br>
+			<div id="alert" class="alert alert-danger" style="display: none;">
+				<strong>Access denied!</strong> Password or username were incorrect.
+			</div>
+			<button ng-click="formSubmit()" class="btn btn-primary btn-block" type="submit">Login</button>
+		</div>
+	</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-route.min.js"></script>
+
+	<script type="text/javascript">
+
+			/*var xmlHttp = new XMLHttpRequest();
+			var out;
+			xmlHttp.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status == 200) {
+					out = this.responseText;
+					console.log(out);
+					if (!out.success){
+						//alert(out);
+						$("#alert").fadeIn();
+					} else {
+						var parsedObj = JSON.parse(out);
+						$('body').replaceWith(parsedObj.page);
+						if (typeof(Storage) !== "undefined") {
+							sessionStorage.token = parsedObj.token;
+						} else {
+    							// Sorry! No Web Storage support..
+    							alert("You need a webstorage");
+    						}
+    					}
+    				}
+    			};
+    			var username = document.querySelector("#name").value;
+    			var password = document.querySelector("#pwd").value;
+    			var pwdHash = JSON.stringify(sjcl.hash.sha256.hash(password));
+    			if (typeof(Storage) !== "undefined") {
+    				sessionStorage.pwdHash = pwdHash;
+    			} else {
+    							// Sorry! No Web Storage support..
+    							alert("You need a webstorage");
+    						}
+    						console.log(pwdHash);
+    						xmlHttp.open("POST", "/login/", true);
+    						xmlHttp.setRequestHeader("Content-type", "application/json ; charset=utf-8");
+    						var params = {name : username, pwd : pwdHash};
+    						var jsonString = JSON.stringify(params);
+    						xmlHttp.send(jsonString);
+    					}
+
+			//Set submit on click
+			document.querySelector("#submitId").onclick = formSubmit;
+
+			//Set submit on enter
+			$('#loginform').keydown(function(event) {
+				if (event.keyCode == 13) {
+					formSubmit();
+					return false;
+				}
+			});*/
+			var app = angular.module('MyLoginApp', []);
+			app.controller('LoginCtrl', ['$scope', '$http', '$window',function($scope, $http, $window) {
+				$scope.formSubmit = function(){
+					$http.post("https://localhost:8089/login/", {name : $scope.name, pwd: $scope.pwd})
+					.then(function(response) {
+						$window.location.href = response.data.hlink;
+						if(!response.data.success){
+							$("#alert").fadeIn();
+						}
+                
+            		}, function errorHandling(response){
+            			console.log("Error "+ response);
+            		});
+				}
+
+			}]);
+
+		</script>	
+	</body>
+	</html>
