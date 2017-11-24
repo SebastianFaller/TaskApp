@@ -1,0 +1,67 @@
+<!DOCTYPE>
+<html ng-app="MyRegistrationApp">
+<head>
+	<title>Registration Page</title>
+	<link rel="stylesheet" href="styles/index.css"/>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+	<script type="text/javascript" src="./sjcl/sjcl.js"></script>
+</head>
+<body ng-controller="RegistrationCtrl">
+	<div id="registration-form">
+		<h1>Registration</h1>
+		<div class="form-group">
+			<label for="name">Name:</label>
+			<input ng-model="name" class="form-control" type="text" id="name" name="name" required/>
+		</div>
+		<div class="form-group">
+			<label for="pwd">Password:</label>
+			<input ng-model="pwd" class="form-control" type="password" id="pwd" name="pwd" required/> 
+			<br>
+			<label for="pwd">Repeat password:</label>
+			<input ng-model="repeatPwd" class="form-control" type="password" id="repeatPwd" name="repeatPwd" required/>
+			<br>
+			<div id="notEqualAlert" class="alert alert-danger" style="display: none;">
+				<strong>Passwords not equal!</strong> You have to repeat the exact same password.
+			</div>
+			<div id="serverAlert" class="alert alert-danger" style="display: none;">
+				<strong>Error occured!</strong> {{alertString}}
+			</div>
+			<button ng-click="formSubmit()" class="btn btn-primary btn-block" type="submit">Login</button>
+		</div>
+	</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-route.min.js"></script>
+
+	<script type="text/javascript">
+		var app = angular.module('MyRegistrationApp', []);
+		app.controller('RegistrationCtrl', ['$scope', '$http', '$window',function($scope, $http, $window) {
+			$scope.formSubmit = function(){
+					//TODO check if this is valid js
+					if($scope.pwd.equals($scope.repeatPwd)){
+						$http.post("https://localhost:8089/registration/", {name : $scope.name, pwd: $scope.pwd})
+						.then(function(response) {
+							$window.location.href = response.data.hlink;
+							if(!response.data.errorSer){
+								$scope.alertString = response.data.errorSer.pop();
+								$("#serverAlert").fadeIn();
+							}
+
+						}, function errorHandling(response){
+							console.log("Error "+ response);
+						});
+					} else {
+						$("#notEqualAlert").fadeIn();
+					}
+				}
+
+			}]);
+
+		</script>	
+	</body>
+	</html>
