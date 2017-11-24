@@ -34,54 +34,6 @@
 
 	<script type="text/javascript">
 
-			/*var xmlHttp = new XMLHttpRequest();
-			var out;
-			xmlHttp.onreadystatechange = function(){
-				if(this.readyState == 4 && this.status == 200) {
-					out = this.responseText;
-					console.log(out);
-					if (!out.success){
-						//alert(out);
-						$("#alert").fadeIn();
-					} else {
-						var parsedObj = JSON.parse(out);
-						$('body').replaceWith(parsedObj.page);
-						if (typeof(Storage) !== "undefined") {
-							sessionStorage.token = parsedObj.token;
-						} else {
-    							// Sorry! No Web Storage support..
-    							alert("You need a webstorage");
-    						}
-    					}
-    				}
-    			};
-    			var username = document.querySelector("#name").value;
-    			var password = document.querySelector("#pwd").value;
-    			var pwdHash = JSON.stringify(sjcl.hash.sha256.hash(password));
-    			if (typeof(Storage) !== "undefined") {
-    				sessionStorage.pwdHash = pwdHash;
-    			} else {
-    							// Sorry! No Web Storage support..
-    							alert("You need a webstorage");
-    						}
-    						console.log(pwdHash);
-    						xmlHttp.open("POST", "/login/", true);
-    						xmlHttp.setRequestHeader("Content-type", "application/json ; charset=utf-8");
-    						var params = {name : username, pwd : pwdHash};
-    						var jsonString = JSON.stringify(params);
-    						xmlHttp.send(jsonString);
-    					}
-
-			//Set submit on click
-			document.querySelector("#submitId").onclick = formSubmit;
-
-			//Set submit on enter
-			$('#loginform').keydown(function(event) {
-				if (event.keyCode == 13) {
-					formSubmit();
-					return false;
-				}
-			});*/
 			var app = angular.module('MyLoginApp', []);
 			app.controller('LoginCtrl', ['$scope', '$http', '$window',function($scope, $http, $window) {
 				$scope.formSubmit = function(){
