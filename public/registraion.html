@@ -46,7 +46,7 @@
 					if($scope.pwd.equals($scope.repeatPwd)){
 						$http.post("https://localhost:8089/registration/", {name : $scope.name, pwd: $scope.pwd})
 						.then(function(response) {
-							$window.location.href = response.data.hlink;
+							$window.localhostation.href = response.data.hlink;
 							if(!response.data.errorSer){
 								$scope.alertString = response.data.errorSer.pop();
 								$("#serverAlert").fadeIn();
@@ -56,6 +56,7 @@
 							console.log("Error "+ response);
 						});
 					} else {
+						//Pwds not equal
 						$("#notEqualAlert").fadeIn();
 					}
 				}

@@ -54,27 +54,13 @@ app.post('/registrate', function(req, res) {
             db.close();
         });
     });
-    
-    if (succ) {
-        if (username != "max" || password != "123") {
-            succ = false;
-            errorSet.push("USER_NOT_EXIST");
-        }
-    }
+    link = "https://127.0.01:8089/index.html";
 
-    var link = "";
-    if(succ){
-    	console.log(succ);
-    	link = "https://127.0.01:8089/routing.html";
-    } 
     //send response
     res.send({
-        success: succ,
         errorSet: errorSet,
         hlink: link
     });
-
-
 });
 
 http.createServer(app).listen(httpPort, function () {
