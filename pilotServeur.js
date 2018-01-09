@@ -102,7 +102,7 @@ app.post('/registrate', function(req, res) {
 		function(error) {
 			throw error;
 		}).catch(function(error){
-			console.log(error);
+			console.log("Hallo "+error);
 	});
 });
 

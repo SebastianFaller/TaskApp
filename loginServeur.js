@@ -93,19 +93,25 @@ app.post('/registrate', function(req, res) {
     if(!checkValidity(pwd)){
         errorSet.push("Password not valid");
     }
-    //check if user already exists 
+    //Add user
     mongoClient.connect(url, function(err, db) {
+        //TODO Check whether user exists
         if (err) {
             throw err;
         }
-       //TODO Check whether user exists
-    });
+        query = {name: username};
 
-    /*//Add user
-    mongoClient.connect(url, function(err, db) {
-        if (err) {
-            throw err;
-        }
+        db.collection("userCollection").find(query).toArray(function(err, result){
+            if (err) {
+                throw err;
+            }
+            if(result!=null&&result.length>0){
+                console.log("Refused to create User")
+                errorSet.push("User already exists");
+            }
+        });
+        //if everything went good so far, create the user
+        if(errorSet.length <= 0){
         newEntry = {
             name: username,
             password: pwd
@@ -113,8 +119,9 @@ app.post('/registrate', function(req, res) {
         db.collection("userCollection").insertOne(newEntry, function(err, res) {
             if (err) throw err;
             db.close();
-        });
-    });*/
+        });   
+        }
+    });
     link = "https://127.0.01:8089/index.html";
 
     console.log("Everthings still alright")
@@ -127,7 +134,7 @@ app.post('/registrate', function(req, res) {
 
 
 function checkValidity(password){
-    return password.size() >= 3;
+    return password.length >= 3;
 }
 
 http.createServer(app).listen(httpPort, function() {
