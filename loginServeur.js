@@ -86,6 +86,10 @@ app.post('/registrate', function(req, res) {
     var username = req.body.name;
     var pwd = req.body.pwd;
 
+    console.log("Received username and pwd");
+    console.log(username);
+    console.log(pwd);
+
     if(!checkValidity(pwd)){
         errorSet.push("Password not valid");
     }
@@ -97,7 +101,7 @@ app.post('/registrate', function(req, res) {
        //TODO Check whether user exists
     });
 
-    //Add user
+    /*//Add user
     mongoClient.connect(url, function(err, db) {
         if (err) {
             throw err;
@@ -110,9 +114,10 @@ app.post('/registrate', function(req, res) {
             if (err) throw err;
             db.close();
         });
-    });
+    });*/
     link = "https://127.0.01:8089/index.html";
 
+    console.log("Everthings still alright")
     //send response
     res.send({
         errorSet: errorSet,
@@ -122,7 +127,7 @@ app.post('/registrate', function(req, res) {
 
 
 function checkValidity(password){
-    return password.size() > 8;
+    return password.size() >= 3;
 }
 
 http.createServer(app).listen(httpPort, function() {

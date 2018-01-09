@@ -20,6 +20,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 
+//TODO Check if only POST is used (requirement of prof)
+
 //init crypto
 var options = {
    key  : fs.readFileSync('encryption/server.key'),
@@ -86,6 +88,24 @@ axios.get("http://127.0.0.1:8091/gettasks").then(
 			throw error;
 		});
 });
+
+app.post('/registrate', function(req, res) {
+    	//console.log("Something "+req.body);
+	axios.post("http://127.0.0.1:8090/registrate", req.body).then(
+		function(response) {
+			console.log("Something is registrated");
+			if(response.data.success){
+			console.log(response.data.hlink);
+				res.send(response.data);
+			}
+		},
+		function(error) {
+			throw error;
+		}).catch(function(error){
+			console.log(error);
+	});
+});
+
 
 https.createServer(options, app).listen(httpsPort, function () {
    console.log('Started pilotServer!');

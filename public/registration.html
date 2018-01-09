@@ -43,8 +43,10 @@
 		app.controller('RegistrationCtrl', ['$scope', '$http', '$window',function($scope, $http, $window) {
 			$scope.formSubmit = function(){
 					//TODO check if this is valid js
-					if($scope.pwd.equals($scope.repeatPwd)){
-						$http.post("https://localhost:8089/registration/", {name : $scope.name, pwd: $scope.pwd})
+					if($scope.pwd == $scope.repeatPwd){
+						console.log($scope.pwd);
+						console.log($scope.repeatPwd);
+						$http.post("https://localhost:8089/registrate/", {name : $scope.name, pwd: $scope.pwd})
 						.then(function(response) {
 							$window.localhostation.href = response.data.hlink;
 							if(!response.data.errorSer){
