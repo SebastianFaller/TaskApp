@@ -30,7 +30,7 @@
 			<div id="serverAlert" class="alert alert-danger" style="display: none;">
 				<strong>Error occured!</strong> {{alertString}}
 			</div>
-			<button ng-click="formSubmit()" class="btn btn-primary btn-block" type="submit">Login</button>
+			<button ng-click="formSubmit()" class="btn btn-primary btn-block" type="submit">Registrate</button>
 		</div>
 	</div>
 
@@ -48,10 +48,12 @@
 						console.log($scope.repeatPwd);
 						$http.post("https://localhost:8089/registrate/", {name : $scope.name, pwd: $scope.pwd})
 						.then(function(response) {
-							$window.localhostation.href = response.data.hlink;
-							if(!response.data.errorSer){
-								$scope.alertString = response.data.errorSer.pop();
+							console.log(response.data.errorSet);
+							if(response.data.errorSet.length > 0){
+								$scope.alertString = response.data.errorSet.pop();
 								$("#serverAlert").fadeIn();
+							} else {
+								$window.location.href = response.data.hlink;
 							}
 
 						}, function errorHandling(response){

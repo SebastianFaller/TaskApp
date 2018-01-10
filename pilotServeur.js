@@ -24,8 +24,8 @@ app.use(bodyParser.urlencoded({
 
 //init crypto
 var options = {
-   key  : fs.readFileSync('encryption/server.key'),
-   cert : fs.readFileSync('encryption/server.crt')
+	key: fs.readFileSync('encryption/server.key'),
+	cert: fs.readFileSync('encryption/server.crt')
 };
 
 
@@ -38,19 +38,18 @@ require("./taskServer");
 require("./loginServeur");
 
 app.post('/login', function(req, res) {
-	console.log("Something "+req.body);
+	console.log("Something " + req.body);
 	axios.post("http://127.0.0.1:8090/login", req.body).then(
 		function(response) {
-				console.log("Hallo");
-			if(response.data.success){
-			console.log(response.data.hlink);
+			if (response.data.success) {
+				console.log(response.data.hlink);
 				res.send(response.data);
 			}
 		},
 		function(error) {
 			throw error;
-		}).catch(function(error){
-			console.log(error);
+		}).catch(function(error) {
+		console.log(error);
 	});
 });
 
@@ -78,38 +77,41 @@ app.post('/deletetask', function(req, res) {
 });
 
 app.get('/gettasks', function(req, res) {
-axios.get("http://127.0.0.1:8091/gettasks").then(
-		function(response){
+	axios.get("http://127.0.0.1:8091/gettasks").then(
+		function(response) {
 			console.log(response.data);
 			res.send(response.data);
-		}, 
-		function(error){
+		},
+		function(error) {
 			console.log("Error occured while gettasks redirect.");
 			throw error;
 		});
 });
 
 app.post('/registrate', function(req, res) {
-    	//console.log("Something "+req.body);
-	axios.post("http://127.0.0.1:8090/registrate", req.body).then(
-		function(response) {
-			console.log("Something is registrated");
-			if(response.data.success){
-			console.log(response.data.hlink);
-				res.send(response.data);
-			}
-		},
-		function(error) {
-			throw error;
-		}).catch(function(error){
-			console.log("Hallo "+error);
-	});
-});
+			//TODO handle the responses, errors and the redirect for success
+			//console.log("Something "+req.body);
+			axios.post("http://127.0.0.1:8090/registrate", req.body).then(
+				function(response) {
+					console.log("Antwort2: " + response.data.errorSet.length);
+							if (response.data.errorSet.length <= 0) {
+								console.log(response.data.hlink);
+								res.send(response.data);
+							} else {
+								res.send(response.data);
+							}
+						},
+						function(error) {
+							throw error;
+						}).catch(function(error) {
+					console.log("Hallo " + error);
+				});
+			});
 
 
-https.createServer(options, app).listen(httpsPort, function () {
-   console.log('Started pilotServer!');
-});
+		https.createServer(options, app).listen(httpsPort, function() {
+			console.log('Started pilotServer!');
+		});
 
-//for test purposes only
-//http.createServer(app).listen(httpPort);
+		//for test purposes only
+		//http.createServer(app).listen(httpPort);

@@ -80,7 +80,7 @@ app.post('/login', function(req, res) {
 //Enregistrate new user or say it already exists.
 app.post('/registrate', function(req, res) {
     //declaration response part
-    var errorSet = [];
+    var errSet = [];
 
     //get param
     var username = req.body.name;
@@ -90,8 +90,8 @@ app.post('/registrate', function(req, res) {
     console.log(username);
     console.log(pwd);
 
-    if(!checkValidity(pwd)){
-        errorSet.push("Password not valid");
+    if (!checkValidity(pwd)) {
+        errSet.push("Password not valid");
     }
     //Add user
     mongoClient.connect(url, function(err, db) {
@@ -99,41 +99,47 @@ app.post('/registrate', function(req, res) {
         if (err) {
             throw err;
         }
-        query = {name: username};
+        query = {
+            name: username
+        };
 
-        db.collection("userCollection").find(query).toArray(function(err, result){
+        db.collection("userCollection").find(query).toArray(function(err, result) {
             if (err) {
                 throw err;
             }
-            if(result!=null&&result.length>0){
-                console.log("Refused to create User")
-                errorSet.push("User already exists");
+            if (result != null && result.length > 0) {
+                errSet.push("User already exists");
+                console.log("Stuff " + errSet);
+                console.log("Refused to create User");
             }
-        });
-        //if everything went good so far, create the user
-        if(errorSet.length <= 0){
-        newEntry = {
-            name: username,
-            password: pwd
-        };
-        db.collection("userCollection").insertOne(newEntry, function(err, res) {
-            if (err) throw err;
-            db.close();
-        });   
-        }
-    });
-    link = "https://127.0.01:8089/index.html";
+            //if everything went good so far, create the user
+            if (errSet.length <= 0) {
+                newEntry = {
+                    name: username,
+                    password: pwd
+                };
+                console.log("Thsi time "+newEntry);
+                db.collection("userCollection").insertOne(newEntry, function(err, res) {
+                    if (err) throw err;
+                    db.close();
+                });
+            }
 
-    console.log("Everthings still alright")
-    //send response
-    res.send({
-        errorSet: errorSet,
-        hlink: link
+            link = "https://127.0.01:8089/index.html";
+            console.log("Stuff " + errSet);
+
+            console.log("Everthings still alright")
+            //send response
+            res.send({
+                errorSet: errSet,
+                hlink: link
+            });
+        });
     });
 });
 
 
-function checkValidity(password){
+function checkValidity(password) {
     return password.length >= 3;
 }
 
