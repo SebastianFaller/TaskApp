@@ -4,16 +4,16 @@ var routingApp = angular.module('routingApp', ['ngRoute']);
 routingApp.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.when('/taskPage', {
-            templateUrl: 'TaskPage.html',
+            templateUrl: 'taskPage.html',
             controller: 'TaskPageCtrl'
         }).
         when('/loginPage', {
-            templateUrl: 'Login.html',
+            templateUrl: 'login.html',
             controller: 'LoginCtrl'
         }).
         when('/page3', {
-            templateUrl: 'Page3.html',
-            controller: 'Page3Ctrl'
+            templateUrl: 'registration.html',
+            controller: 'RegistrationCtrl'
         }).
         otherwise({
             redirectTo: '/taskPage'
@@ -23,11 +23,4 @@ routingApp.config(['$routeProvider',
 
 routingApp.controller('NavCtrl', ['$scope', function($scope) {
 
-}]);
-
-routingApp.controller('Page3Ctrl', ['$scope', 'ComputeService', function($scope, ComputeService) {
-    $scope.compe = function() {
-        $scope.resPage3 =
-            ComputeService.addNumber($scope.val1, $scope.val2);
-    };
 }]);
