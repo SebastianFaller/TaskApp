@@ -7,9 +7,9 @@ routingApp.config(['$routeProvider',
             templateUrl: 'TaskPage.html',
             controller: 'TaskPageCtrl'
         }).
-        when('/page2', {
-            templateUrl: 'Page2.html',
-            controller: 'Page2Ctrl'
+        when('/loginPage', {
+            templateUrl: 'Login.html',
+            controller: 'LoginCtrl'
         }).
         when('/page3', {
             templateUrl: 'Page3.html',
@@ -22,10 +22,6 @@ routingApp.config(['$routeProvider',
 ]);
 
 routingApp.controller('NavCtrl', ['$scope', function($scope) {
-
-}]);
-
-routingApp.controller('Page2Ctrl', ['$scope', function($scope) {
 
 }]);
 
