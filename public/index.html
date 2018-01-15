@@ -25,6 +25,8 @@
 				<strong>Access denied!</strong> Password or username were incorrect.
 			</div>
 			<button ng-click="formSubmit()" class="btn btn-primary btn-block" type="submit">Login</button>
+
+			<a href="registration.html" class="btn btn-default btn-block">Registrate</a>
 		</div>
 	</div>
 
@@ -47,8 +49,7 @@
             		}, function errorHandling(response){
             			console.log("Error "+ response);
             		});
-				}
-
+				};
 			}]);
 
 		</script>	
