@@ -41,9 +41,11 @@
 				$scope.formSubmit = function(){
 					$http.post("https://localhost:8089/login/", {name : $scope.name, pwd: $scope.pwd})
 					.then(function(response) {
-						$window.location.href = response.data.hlink;
+						console.log("Hallo"+response.data.success);
 						if(!response.data.success){
 							$("#alert").fadeIn();
+						} else{
+						$window.location.href = response.data.hlink;	
 						}
                 
             		}, function errorHandling(response){

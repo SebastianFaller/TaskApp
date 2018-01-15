@@ -41,10 +41,7 @@ app.post('/login', function(req, res) {
 	console.log("Something " + req.body);
 	axios.post("http://127.0.0.1:8090/login", req.body).then(
 		function(response) {
-			if (response.data.success) {
-				console.log(response.data.hlink);
-				res.send(response.data);
-			}
+			res.send(response.data);
 		},
 		function(error) {
 			throw error;
@@ -89,29 +86,29 @@ app.get('/gettasks', function(req, res) {
 });
 
 app.post('/registrate', function(req, res) {
-			//TODO handle the responses, errors and the redirect for success
-			//console.log("Something "+req.body);
-			axios.post("http://127.0.0.1:8090/registrate", req.body).then(
-				function(response) {
-					console.log("Antwort2: " + response.data.errorSet.length);
-							if (response.data.errorSet.length <= 0) {
-								console.log(response.data.hlink);
-								res.send(response.data);
-							} else {
-								res.send(response.data);
-							}
-						},
-						function(error) {
-							throw error;
-						}).catch(function(error) {
-					console.log("Hallo " + error);
-				});
-			});
+	//TODO handle the responses, errors and the redirect for success
+	//console.log("Something "+req.body);
+	axios.post("http://127.0.0.1:8090/registrate", req.body).then(
+		function(response) {
+			console.log("Antwort2: " + response.data.errorSet.length);
+			if (response.data.errorSet.length <= 0) {
+				console.log(response.data.hlink);
+				res.send(response.data);
+			} else {
+				res.send(response.data);
+			}
+		},
+		function(error) {
+			throw error;
+		}).catch(function(error) {
+		console.log("Hallo " + error);
+	});
+});
 
 
-		https.createServer(options, app).listen(httpsPort, function() {
-			console.log('Started pilotServer!');
-		});
+https.createServer(options, app).listen(httpsPort, function() {
+	console.log('Started pilotServer!');
+});
 
-		//for test purposes only
-		//http.createServer(app).listen(httpPort);
+//for test purposes only
+//http.createServer(app).listen(httpPort);

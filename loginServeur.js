@@ -55,24 +55,53 @@ app.post('/login', function(req, res) {
         errorSet.push("MISSING_PARAMS");
     }
     if (succ) {
+        //insert here
+        /*
         if (username != "max" || password != "123") {
             succ = false;
             errorSet.push("USER_NOT_EXIST");
-        }
-    }
+        }*/
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                throw err;
+            }
 
-    var link = "";
-    if (succ) {
-        console.log(succ);
-        link = "https://127.0.01:8089/routing.html";
-    }
-    //send response
-    res.send({
-        success: succ,
-        errorSet: errorSet,
-        hlink: link
-    });
+            query = {
+                name: username
+            };
 
+            db.collection("userCollection").find(query).toArray(function(err, result) {
+                if (err) {
+                    throw err;
+                }
+                if (result != null && result.length > 0) {
+                    //TODO check  pwd
+                    console.log("Ergebnis " + result.pop().password);
+                    if (result.pop().password != password) {
+                        succ = false;
+                        errorSet.push("USER_NOT_EXIST");
+                    }
+                }
+                var link = "";
+/*                if (succ) {
+                    console.log(succ);
+                    link = "https://127.0.01:8089/routing.html";
+                }*/
+                link = "https://127.0.01:8089/routing.html";
+
+
+                db.close();
+                //send response
+                res.send({
+                    success: succ,
+                    errorSet: errorSet,
+                    hlink: link
+                });
+            });
+        });
+
+
+    }
 
 });
 
@@ -118,7 +147,7 @@ app.post('/registrate', function(req, res) {
                     name: username,
                     password: pwd
                 };
-                console.log("Thsi time "+newEntry);
+                console.log("Thsi time " + newEntry);
                 db.collection("userCollection").insertOne(newEntry, function(err, res) {
                     if (err) throw err;
                     db.close();
@@ -134,6 +163,7 @@ app.post('/registrate', function(req, res) {
                 errorSet: errSet,
                 hlink: link
             });
+            db.close();
         });
     });
 });
