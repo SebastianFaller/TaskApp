@@ -25,5 +25,4 @@ angular.module('routingApp').controller('RegistrationCtrl', ['$scope', '$http', 
             $("#notEqualAlert").fadeIn();
         }
     };
-
 }]);

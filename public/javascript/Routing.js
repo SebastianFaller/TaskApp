@@ -11,12 +11,12 @@ routingApp.config(['$routeProvider',
             templateUrl: 'login.html',
             controller: 'LoginCtrl'
         }).
-        when('/page3', {
+        when('/registrationPage', {
             templateUrl: 'registration.html',
             controller: 'RegistrationCtrl'
         }).
         otherwise({
-            redirectTo: '/taskPage'
+            redirectTo: '/loginPage'
         });
     }
 ]);

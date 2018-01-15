@@ -18,30 +18,12 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-/*
- mongoClient.connect(url, function(err, db) {
-        if (err) {
-            throw err;
-        }
-        newEntry = {
-            name: "Max",
-            pwd: "123"
-        };
-        db.collection("usersCollection").insertOne(newEntry, function(err, res) {
-            if (err) throw err;
-            db.close();
-        });
-    });
-    */
-
-
 //authorize access to public directory to server html, css, js
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 //handle request of login
 app.post('/login', function(req, res) {
-    console.log("I got something");
     //declaration response part
     var succ = true;
     var errorSet = [];
@@ -88,13 +70,7 @@ app.post('/login', function(req, res) {
                         usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 120});
                     }
                 }
-             
-/*                if (succ) {
-                    console.log(succ);
-                    link = "https://127.0.01:8089/routing.html";
-                }*/
-                var link = "https://127.0.01:8089/routing.html";
-
+                var link = "#!/taskPage";
 
                 db.close();
                 //send response
@@ -122,16 +98,11 @@ app.post('/registrate', function(req, res) {
     var username = req.body.name;
     var pwd = req.body.pwd;
 
-    console.log("Received username and pwd");
-    console.log(username);
-    console.log(pwd);
-
     if (!checkValidity(pwd)) {
         errSet.push("Password not valid");
     }
     //Add user
     mongoClient.connect(url, function(err, db) {
-        //TODO Check whether user exists
         if (err) {
             throw err;
         }
@@ -154,18 +125,13 @@ app.post('/registrate', function(req, res) {
                     name: username,
                     password: pwd
                 };
-                console.log("Thsi time " + newEntry);
                 db.collection("userCollection").insertOne(newEntry, function(err, res) {
                     if (err) throw err;
                     db.close();
                 });
             }
-
-            link = "https://127.0.01:8089/index.html";
-            console.log("Stuff " + errSet);
-
-            console.log("Everthings still alright")
-            //send response
+            //for redirection to login page
+            link = "#!/loginPage";
             res.send({
                 errorSet: errSet,
                 hlink: link
