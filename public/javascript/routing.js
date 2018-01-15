@@ -3,9 +3,9 @@ var routingApp = angular.module('routingApp', ['ngRoute']);
 //Define Routing for app
 routingApp.config(['$routeProvider',
     function($routeProvider) {
-        $routeProvider.when('/page1', {
-            templateUrl: 'Page1.html',
-            controller: 'Page1Ctrl'
+        $routeProvider.when('/taskPage', {
+            templateUrl: 'TaskPage.html',
+            controller: 'TaskPageCtrl'
         }).
         when('/page2', {
             templateUrl: 'Page2.html',
@@ -16,43 +16,13 @@ routingApp.config(['$routeProvider',
             controller: 'Page3Ctrl'
         }).
         otherwise({
-            redirectTo: '/page1'
+            redirectTo: '/taskPage'
         });
     }
 ]);
 
 routingApp.controller('NavCtrl', ['$scope', function($scope) {
 
-}]);
-
-routingApp.controller('Page1Ctrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
-    $scope.tasks = [];
-    $scope.line = "";
-    console.log("Der token ist "+$window.sessionStorage.token);
-    $http.post("/gettasks", {token: $window.sessionStorage.token}).then(function(res){
-        $scope.tasks = res.data;
-    }, function(err){
-
-    });
-    $scope.addTask = function() {
-        $http.post("/addtask", {task : $scope.line})
-            .then(function(response) {
-                $scope.tasks.push($scope.line);
-            }, function errorHandling(response){
-                console.log(response);
-            });
-
-    };
-    $scope.deleteTask = function(task){
-        $http.post("/deletetask", {toDelete: task}).then(function(response){
-            var i = $scope.tasks.indexOf(task);
-            if(i < 0) console.log("not found");
-            $scope.tasks.splice(i,1);
-            console.log($scope.tasks);
-        }, function errorHandling(response){
-            console.log(response);
-        }); 
-    };
 }]);
 
 routingApp.controller('Page2Ctrl', ['$scope', function($scope) {

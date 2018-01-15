@@ -1,10 +1,10 @@
     <!DOCTYPE HTML>
 <html ng-app="routingApp">
     <head>
-        <title>Compteur sauvegardé</title>
+        <title>Manage your tasks</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="styles/mystyles.css"> 
+    <link rel="stylesheet" type="text/css" href="styles/routing.css"> 
     </head>
 
     <body>
@@ -22,7 +22,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li ng-class="{ active : isActive('/page1')}"><a href="#!/page1">Page 1<span class="sr-only">(current)</span></a></li>
+                            <li ng-class="{ active : isActive('/page1')}"><a href="#!/taskPage">Page 1<span class="sr-only">(current)</span></a></li>
                             <li ng-class="{ active : isActive('/page2')}"><a href="#!/page2">Page 2</a></li>
                             <li ng-class="{ active : isActive('/page3')}"><a href="#!/page3">Page 3</a></li>
                         </ul>
@@ -40,6 +40,8 @@
         crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="javascript/routing.js"></script>
+        <script src="javascript/TaskPageCtrl.js"></script>
+
     </body>
 
 </html>
