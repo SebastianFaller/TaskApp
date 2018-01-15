@@ -25,10 +25,11 @@ routingApp.controller('NavCtrl', ['$scope', function($scope) {
 
 }]);
 
-routingApp.controller('Page1Ctrl', ['$scope', '$http', function($scope, $http) {
+routingApp.controller('Page1Ctrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.tasks = [];
     $scope.line = "";
-    $http.get("/gettasks").then(function(res){
+    console.log("Der token ist "+$window.sessionStorage.token);
+    $http.post("/gettasks", {token: $window.sessionStorage.token}).then(function(res){
         $scope.tasks = res.data;
     }, function(err){
 

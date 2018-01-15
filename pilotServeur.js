@@ -50,6 +50,20 @@ app.post('/login', function(req, res) {
 	});
 });
 
+app.post('/logout', function(req, res) {
+	console.log("Something " + req.body);
+	axios.post("http://127.0.0.1:8090/logout", req.body).then(
+		function(response) {
+			//TODO implement
+			res.send(response.data);
+		},
+		function(error) {
+			throw error;
+		}).catch(function(error) {
+		console.log(error);
+	});
+});
+
 
 app.post('/addtask', function(req, res) {
 	console.log(req.body);
@@ -73,8 +87,8 @@ app.post('/deletetask', function(req, res) {
 		});
 });
 
-app.get('/gettasks', function(req, res) {
-	axios.get("http://127.0.0.1:8091/gettasks").then(
+app.post('/gettasks', function(req, res) {
+	axios.post("http://127.0.0.1:8091/gettasks",req.body).then(
 		function(response) {
 			console.log(response.data);
 			res.send(response.data);

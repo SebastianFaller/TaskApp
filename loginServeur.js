@@ -2,6 +2,7 @@ var http = require('http');
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
 
 var httpPort = 8090;
 var app = express();
@@ -44,6 +45,7 @@ app.post('/login', function(req, res) {
     //declaration response part
     var succ = true;
     var errorSet = [];
+    var usertoken;
 
     //get param
     var username = req.body.name;
@@ -80,14 +82,18 @@ app.post('/login', function(req, res) {
                     if (result.pop().password != password) {
                         succ = false;
                         errorSet.push("USER_NOT_EXIST");
+                    } else{
+                        //Provide token
+                        //token is valid 2 Minutes
+                        usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 120});
                     }
                 }
-                var link = "";
+             
 /*                if (succ) {
                     console.log(succ);
                     link = "https://127.0.01:8089/routing.html";
                 }*/
-                link = "https://127.0.01:8089/routing.html";
+                var link = "https://127.0.01:8089/routing.html";
 
 
                 db.close();
@@ -95,7 +101,8 @@ app.post('/login', function(req, res) {
                 res.send({
                     success: succ,
                     errorSet: errorSet,
-                    hlink: link
+                    hlink: link,
+                    token: usertoken
                 });
             });
         });

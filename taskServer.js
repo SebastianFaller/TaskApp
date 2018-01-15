@@ -37,28 +37,46 @@ app.post('/addtask', function(req, res) {
     res.send();
 });
 
-app.post("/deletetask", function(req, res){
-    mongoClient.connect(url, function(err, db){
-        console.log(req);   
-        query = {task: req.body.toDelete};
-        db.collection("taskCollection").deleteOne(query, function(err, obj){
-            if(err) throw err;
+app.post("/deletetask", function(req, res) {
+    mongoClient.connect(url, function(err, db) {
+        console.log(req);
+        query = {
+            task: req.body.toDelete
+        };
+        db.collection("taskCollection").deleteOne(query, function(err, obj) {
+            if (err) throw err;
         });
         db.close();
     });
     res.send();
 });
 
-app.get('/gettasks', function(req, res) {
-    console.log("entered taskserver gettasks")
+app.post('/gettasks', function(req, res) {
+    console.log("entered taskserver gettasks");
+    console.log(req.body);
+    var token = req.data.token;
+    console.log(token);
+
+    jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
+        if (!err) {
+            console.log("Token is goood");
+            //res.json(secrets);
+        } else {
+            //res.send(err);
+        }
+    });
+
     mongoClient.connect(url, function(err, db) {
         if (err) {
             throw err;
         }
-        db.collection("taskCollection").find({}, {user : false, _id:false}).toArray(function(err, result){
-            if(err) throw err;
+        db.collection("taskCollection").find({}, {
+            user: false,
+            _id: false
+        }).toArray(function(err, result) {
+            if (err) throw err;
             taskArray = [];
-            result.forEach(function(item, index){
+            result.forEach(function(item, index) {
                 taskArray.push(item.task);
             });
             res.send(taskArray);
@@ -68,6 +86,6 @@ app.get('/gettasks', function(req, res) {
 });
 
 
-http.createServer(app).listen(httpPort, function () {
-   console.log('Started taskServer!');
+http.createServer(app).listen(httpPort, function() {
+    console.log('Started taskServer!');
 });
