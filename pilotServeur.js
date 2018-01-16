@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var fs = require("fs");
+var Ddos = require('ddos');
 
 var httpsPort = 8089;
 var httpPort = 8092;
@@ -12,6 +13,11 @@ var axios = require("axios");
 
 
 var http = require("http");
+
+//Prevent ddos attacks
+var ddos = new Ddos({burst:10, limit:15});
+app.use(ddos.express);
+
 
 //initi parser
 app.use(bodyParser.json());
