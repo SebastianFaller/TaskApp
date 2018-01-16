@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="styles/taskPage.css"> 
 <div ng-app="TaskApp" ng-controller="TaskPageCtrl" id="page1" class="">
 	<div id="formDiv" class="form-group">
 		<label for="task">Add a new task:</label>
@@ -8,9 +9,8 @@
 	<ul class="list-group" id="resultList">
 		<li ng-repeat="x in tasks"  class="list-group-item">
 			<label>{{ x }}</label>	
-			
-				<button style="text-align: right;", type="button" class="btn btn-danger" ng-click="deleteTask(x)">Delete</button>
-			
+				<button type="button" class="btn btn-danger pull-right" ng-click="deleteTask(x)">Delete</button>
 		</li>
 	</ul> 
 </div>
+
