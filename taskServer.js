@@ -84,6 +84,8 @@ app.post('/gettasks', function(req, res) {
             });
         } else {
             //token is valid
+            var username = jwt.decode(token).user;
+
             console.log("Token is goood");
             mongoClient.connect(url, function(err, db) {
                 if (err) {
@@ -91,7 +93,7 @@ app.post('/gettasks', function(req, res) {
                     errSet.push("INTERNAL_ERROR");
                     console.log("Unable to connect to mongoDB: " + err);
                 } else {
-                    db.collection("taskCollection").find({}, {
+                    db.collection("taskCollection").find({user: username}, {
                         user: false,
                         _id: false
                     }).toArray(function(err, result) {
