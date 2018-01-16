@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-
+//TODO Check if neccessary in silos
 //authorize access to public directory to server html, css, js
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,11 +40,6 @@ app.post('/login', function(req, res) {
     }
     if (succ) {
         //insert here
-        /*
-        if (username != "max" || password != "123") {
-            succ = false;
-            errorSet.push("USER_NOT_EXIST");
-        }*/
         mongoClient.connect(url, function(err, db) {
             if (err) {
                 throw err;
@@ -60,7 +55,7 @@ app.post('/login', function(req, res) {
                 }
                 if (result != null && result.length > 0) {
                     //TODO check  pwd
-                    console.log("Ergebnis " + result.pop().password);
+                    //console.log("Ergebnis " + result.pop().password);
                     if (result.pop().password != password) {
                         succ = false;
                         errorSet.push("USER_NOT_EXIST");
@@ -69,6 +64,8 @@ app.post('/login', function(req, res) {
                         //token is valid 2 Minutes
                         usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 120});
                     }
+                } else{
+                    succ = false;
                 }
                 var link = "#!/taskPage";
 
@@ -82,10 +79,7 @@ app.post('/login', function(req, res) {
                 });
             });
         });
-
-
     }
-
 });
 
 

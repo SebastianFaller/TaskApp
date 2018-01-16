@@ -59,9 +59,15 @@ app.post('/gettasks', function(req, res) {
 
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
         if (err) {
+            //Token is not valid
             errSet.push("Please log in to see this page");
             console.log("Token is baaaad");
+            res.send({
+                tasks: {},
+                errorSet: errSet
+            });
         } else {
+            //token is valid
             console.log("Token is goood");
             mongoClient.connect(url, function(err, db) {
                 if (err) {
@@ -69,7 +75,6 @@ app.post('/gettasks', function(req, res) {
                     errSet.push("INTERNAL_ERROR");
                     console.log("Unable to connect to mongoDB: " + err);
                 } else {
-
                     db.collection("taskCollection").find({}, {
                         user: false,
                         _id: false
@@ -84,12 +89,10 @@ app.post('/gettasks', function(req, res) {
                             tasks: taskArray,
                             errorSet: errSet
                         });
-                        db.close();
                     });
                 }
+                db.close();
             });
-
-
         }
     });
 });

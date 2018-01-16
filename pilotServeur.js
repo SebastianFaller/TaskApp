@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
-
+//TODO do the https everywhere shit
 //TODO Check if only POST is used (requirement of prof)
 
 //init crypto
