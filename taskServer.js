@@ -20,23 +20,39 @@ app.use(bodyParser.urlencoded({
 
 
 app.post('/addtask', function(req, res) {
-    var recievedTask = req.body.task;
-    mongoClient.connect(url, function(err, db) {
-        if (err) {
-            throw err;
-        }
-        newEntry = {
-            user: "User1",
-            task: recievedTask
-        };
-        db.collection("taskCollection").insertOne(newEntry, function(err, res) {
-            if (err) throw err;
-            db.close();
-        });
-    });
+    var errSet = [];
+    var token = req.body.token;
 
-    console.log(recievedTask);
-    res.send();
+    jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
+        if (err) {
+            //Token is not valid
+            errSet.push("Please log in to do this request");
+            console.log("Token is baaaad");
+            res.send({
+                errorSet: errSet
+            });
+        } else {
+            //token is valid
+            var username = jwt.decode(token).user;
+            var recievedTask = req.body.task;
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    throw err;
+                }
+                newEntry = {
+                    user: username,
+                    task: recievedTask
+                };
+                db.collection("taskCollection").insertOne(newEntry, function(err, res) {
+                    if (err) throw err;
+                    db.close();
+                });
+            });
+
+            console.log(recievedTask);
+            res.send();
+        }
+    });
 });
 
 app.post("/deletetask", function(req, res) {

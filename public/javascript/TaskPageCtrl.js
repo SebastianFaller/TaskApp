@@ -16,7 +16,9 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
     });
     $scope.addTask = function() {
         $http.post("/addtask", {
-                task: $scope.line
+                task: $scope.line,
+                token: $window.sessionStorage.token
+
             })
             .then(function(response) {
                 $scope.tasks.push($scope.line);

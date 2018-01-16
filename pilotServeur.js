@@ -50,26 +50,11 @@ app.post('/login', function(req, res) {
 	});
 });
 
-app.post('/logout', function(req, res) {
-	console.log("Something " + req.body);
-	axios.post("http://127.0.0.1:8090/logout", req.body).then(
-		function(response) {
-			//TODO implement
-			res.send(response.data);
-		},
-		function(error) {
-			throw error;
-		}).catch(function(error) {
-		console.log(error);
-	});
-});
-
-
 app.post('/addtask', function(req, res) {
 	console.log(req.body);
 	axios.post("http://127.0.0.1:8091/addtask", req.body).then(
 		function(response) {
-			res.send();
+			res.send(response.data);
 		},
 		function(error) {
 			throw error;
