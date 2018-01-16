@@ -56,17 +56,43 @@ app.post('/addtask', function(req, res) {
 });
 
 app.post("/deletetask", function(req, res) {
-    mongoClient.connect(url, function(err, db) {
-        console.log(req);
-        query = {
-            task: req.body.toDelete
-        };
-        db.collection("taskCollection").deleteOne(query, function(err, obj) {
-            if (err) throw err;
-        });
-        db.close();
+    var errSet = [];
+    var token = req.body.token;
+    console.log("Delet rec tok "+token);
+    jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
+        if (err) {
+            //Token is not valid
+            errSet.push("Please log in to see this page");
+            console.log("Token is baaaad in delete");
+            res.send({
+                errorSet: errSet
+            });
+        } else {
+            //token is valid
+            var username = jwt.decode(token).user;
+
+            console.log("Token is goood");
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    errSet.push("INTERNAL_ERROR");
+                    console.log("Unable to connect to mongoDB: " + err);
+                } else {
+
+                    //alles gut
+                    //
+                    query = {
+                        task: req.body.toDelete,
+                        user: username
+                    };
+                    db.collection("taskCollection").deleteOne(query, function(err, obj) {
+                        if (err) throw err;
+                    });
+                }
+                db.close();
+            });
+        }
+        res.send();
     });
-    res.send();
 });
 
 app.post('/gettasks', function(req, res) {
@@ -93,7 +119,9 @@ app.post('/gettasks', function(req, res) {
                     errSet.push("INTERNAL_ERROR");
                     console.log("Unable to connect to mongoDB: " + err);
                 } else {
-                    db.collection("taskCollection").find({user: username}, {
+                    db.collection("taskCollection").find({
+                        user: username
+                    }, {
                         user: false,
                         _id: false
                     }).toArray(function(err, result) {

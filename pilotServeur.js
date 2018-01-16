@@ -65,7 +65,7 @@ app.post('/addtask', function(req, res) {
 app.post('/deletetask', function(req, res) {
 	axios.post("http://127.0.0.1:8091/deletetask", req.body).then(
 		function(response) {
-			res.send();
+			res.send(response.data);
 		},
 		function(error) {
 			throw error;

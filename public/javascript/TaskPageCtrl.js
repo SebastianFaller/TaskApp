@@ -29,7 +29,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
     };
     $scope.deleteTask = function(task) {
         $http.post("/deletetask", {
-            toDelete: task
+            toDelete: task,
+            token: $window.sessionStorage.token
         }).then(function(response) {
             var i = $scope.tasks.indexOf(task);
             if (i < 0) console.log("not found");
