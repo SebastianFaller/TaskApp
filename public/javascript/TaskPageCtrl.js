@@ -1,11 +1,16 @@
 angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.tasks = [];
     $scope.line = "";
-    console.log("Der token ist " + $window.sessionStorage.token);
     $http.post("/gettasks", {
         token: $window.sessionStorage.token
     }).then(function(res) {
-        $scope.tasks = res.data;
+        console.log(res.data);
+        if (res.data.errorSet != null && res.data.errorSet.length > 0) {
+            alert(res.data.errorSet.pop());
+            $window.location.href = "#!/loginPage";
+        } else {
+            $scope.tasks = res.data.tasks;
+        }
     }, function(err) {
 
     });

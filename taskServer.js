@@ -2,6 +2,8 @@ var http = require('http');
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
+
 
 var httpPort = 8091;
 var app = express();
@@ -52,36 +54,43 @@ app.post("/deletetask", function(req, res) {
 });
 
 app.post('/gettasks', function(req, res) {
-    console.log("entered taskserver gettasks");
-    console.log(req.body);
-    var token = req.data.token;
-    console.log(token);
+    var errSet = [];
+    var token = req.body.token;
 
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
-        if (!err) {
-            console.log("Token is goood");
-            //res.json(secrets);
-        } else {
-            //res.send(err);
-        }
-    });
-
-    mongoClient.connect(url, function(err, db) {
         if (err) {
-            throw err;
-        }
-        db.collection("taskCollection").find({}, {
-            user: false,
-            _id: false
-        }).toArray(function(err, result) {
-            if (err) throw err;
-            taskArray = [];
-            result.forEach(function(item, index) {
-                taskArray.push(item.task);
+            errSet.push("Please log in to see this page");
+            console.log("Token is baaaad");
+        } else {
+            console.log("Token is goood");
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    //TODO do everywhere like that instead of throw err;
+                    errSet.push("INTERNAL_ERROR");
+                    console.log("Unable to connect to mongoDB: " + err);
+                } else {
+
+                    db.collection("taskCollection").find({}, {
+                        user: false,
+                        _id: false
+                    }).toArray(function(err, result) {
+                        if (err) throw err;
+                        taskArray = [];
+                        result.forEach(function(item, index) {
+                            taskArray.push(item.task);
+                        });
+
+                        res.send({
+                            tasks: taskArray,
+                            errorSet: errSet
+                        });
+                        db.close();
+                    });
+                }
             });
-            res.send(taskArray);
-            db.close();
-        });
+
+
+        }
     });
 });
 
