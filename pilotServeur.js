@@ -67,6 +67,17 @@ app.post('/addtask', function(req, res) {
 		});
 });
 
+app.post('/taskdone', function(req, res) {
+	console.log(req.body);
+	axios.post("http://127.0.0.1:8091/taskdone", req.body).then(
+		function(response) {
+			res.send(response.data);
+		},
+		function(error) {
+			throw error;
+		});
+});
+
 
 app.post('/deletetask', function(req, res) {
 	axios.post("http://127.0.0.1:8091/deletetask", req.body).then(

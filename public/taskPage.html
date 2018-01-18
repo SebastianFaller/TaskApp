@@ -1,7 +1,6 @@
 <link rel="stylesheet" type="text/css" href="styles/taskPage.css"> 
 <div ng-app="TaskApp" ng-controller="TaskPageCtrl" id="page1" class="">
 	<div id="formDiv" class="form-group">
-		<!--<div id="formDiv" class="form-inline">-->
 			<label for="task">Add a new task:</label>
 			<div class="row">
 				<div class="form-group col-md-7">
@@ -22,7 +21,7 @@
 			</thead>
 			<tr ng-repeat="x in tasks">
 				<td id="taskCol">{{x.task}}</td>
-				<td id="groupCol">{{x.group}}</td>
+				<td id="groupCol">{{x.group+" "+x.done}}</td>
 				<td id="buttonCol">
 					<div class="dropdown" style="text-align: right">
 						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span>

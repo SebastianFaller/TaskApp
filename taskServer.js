@@ -95,6 +95,51 @@ app.post("/deletetask", function(req, res) {
     });
 });
 
+
+app.post("/taskdone", function(req, res) {
+    var errSet = [];
+    var token = req.body.token;
+    console.log("Done rec tok "+token);
+    jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
+        if (err) {
+            //Token is not valid
+            errSet.push("Please log in to see this page");
+            console.log("Token is baaaad in done");
+            res.send({
+                errorSet: errSet
+            });
+        } else {
+            //token is valid
+            var username = jwt.decode(token).user;
+
+            console.log("Token is goood");
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    errSet.push("INTERNAL_ERROR");
+                    console.log("Unable to connect to mongoDB: " + err);
+                } else {
+
+                    query = {
+                        task: req.body.task,
+                        user: username
+                    };
+                    //clone the object
+                    newTask = JSON.parse(JSON.stringify(req.body.task));
+                    newTask.done = true;
+                    console.log("Here is the new task "+JSON.stringify(newTask));
+                    newValue = {$set: {task: newTask}};
+                    db.collection("taskCollection").updateOne(query, newValue, function(err, obj) {
+                        if (err) throw err;
+                    });
+                }
+                db.close();
+            });
+        }
+        res.send();
+    });
+});
+
+
 app.post('/gettasks', function(req, res) {
     var errSet = [];
     var token = req.body.token;

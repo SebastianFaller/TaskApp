@@ -9,6 +9,7 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
         console.log(res.data);
         if (res.data.errorSet != null && res.data.errorSet.length > 0) {
             alert(res.data.errorSet.pop());
+            //TODO change navbar user
             $window.location.href = "#!/loginPage";
         } else {
             $scope.tasks = res.data.tasks;
@@ -19,7 +20,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
     $scope.addTask = function() {
         newTask = {
             task: $scope.line,
-            group: $scope.lineGroup
+            group: $scope.lineGroup,
+            done: false
         };
         $http.post("/addtask", {
                 task: newTask,
@@ -48,7 +50,19 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
             console.log(response);
         });
     };
-    $scope.doneTask = function(task) {
-        console.log("task " + JSON.stringify(task) + " is done!");
+    $scope.doneTask = function(doneTask) {
+        $http.post("/taskdone", {
+                task: doneTask,
+                token: $window.sessionStorage.token
+
+            })
+            .then(function(response) {
+                //TODO really call by ref?
+                doneTask.done = true;
+
+                console.log("task " + JSON.stringify(doneTask) + " is done!");
+            }, function errorHandling(response) {
+                console.log(response);
+            });
     };
 }]);
