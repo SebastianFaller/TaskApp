@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
+var sjcl = require('./sjcl/sjcl.js');
+var randomstring = require("randomstring");
+
 
 var httpPort = 8090;
 var app = express();
@@ -54,17 +57,24 @@ app.post('/login', function(req, res) {
                     throw err;
                 }
                 if (result != null && result.length > 0) {
-                    //TODO check  pwd
                     //console.log("Ergebnis " + result.pop().password);
-                    if (result.pop().password != password) {
+                    resultObj = result.pop();
+                    //salt password to compare with salted pwd in Database
+                    pwdSalt = resultObj.salt;
+                    saltedPwd = JSON.stringify(sjcl.hash.sha256.hash(password + pwdSalt));
+                    if (resultObj.password != saltedPwd) {
                         succ = false;
                         errorSet.push("USER_NOT_EXIST");
                     } else{
                         //Provide token
                         //token is valid 40 Minutes
-                        usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 2400});
+                        usertoken = jwt.sign({
+                            user: username
+                        }, 'super_secret_passsword123', {
+                            expiresIn: 2400
+                        });
                     }
-                } else{
+                } else {
                     succ = false;
                 }
                 var link = "#!/taskPage";
@@ -91,10 +101,13 @@ app.post('/registrate', function(req, res) {
     //get param
     var username = req.body.name;
     var pwd = req.body.pwd;
-
     if (!checkValidity(pwd)) {
-        errSet.push("Password not valid");
+        errSet.push("Password must contain a number and be 10 characters long.");
     }
+    //salt the pwd
+    var pwdSalt = randomstring.generate(10);
+    pwd = JSON.stringify(sjcl.hash.sha256.hash(pwd + pwdSalt));
+
     //Add user
     mongoClient.connect(url, function(err, db) {
         if (err) {
@@ -117,7 +130,8 @@ app.post('/registrate', function(req, res) {
             if (errSet.length <= 0) {
                 newEntry = {
                     name: username,
-                    password: pwd
+                    password: pwd,
+                    salt: pwdSalt
                 };
                 db.collection("userCollection").insertOne(newEntry, function(err, res) {
                     if (err) throw err;
@@ -137,7 +151,8 @@ app.post('/registrate', function(req, res) {
 
 
 function checkValidity(password) {
-    return password.length >= 3;
+    var regex = "(\S*[0-9]+\S*[A-Za-z]+\S*)|(\S*[A-Za-z]+\S*[0-9]+\S*)";
+    return password.length >= 10 && password.match(regex);
 }
 
 http.createServer(app).listen(httpPort, function() {
