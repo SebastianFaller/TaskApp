@@ -32,9 +32,9 @@
 					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
 						<span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#">HTML</a></li>
-							<li><a href="#">CSS</a></li>
-							<li><a href="#">JavaScript</a></li>
+							<li ng-repeat="g in groupList"><a ng-click="showGroup(g)">{{g}}</a></li>
+							<li class="divider"></li>
+							<li><a ng-click="showAllGroups()">All</a></li>
 						</ul>
 					</div>
 
@@ -42,7 +42,7 @@
 				</th>
 				<th></th>
 			</thead>
-			<tr ng-repeat="x in tasks" class="{{ x.done ? 'success' : '' }}">
+			<tr ng-repeat="x in showList" class="{{ x.done ? 'success' : '' }}">
 				<td id="taskCol">{{x.task}}</td>
 				<td id="groupCol">{{ x.group }}</td>
 				<td id="buttonCol">

@@ -14,6 +14,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             $window.location.href = "#!/loginPage";
         } else {
             $scope.tasks = res.data.tasks;
+            $scope.showList = $scope.tasks;
+            $scope.groupList = $scope.filterDistinct($scope.tasks);
         }
     }, function(err) {
 
@@ -31,6 +33,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             })
             .then(function(response) {
                 $scope.tasks.push(newTask);
+                //Update the filtered groups
+                $scope.showGroup($scope.filterGroup);
                 console.log("New tasks " + JSON.stringify($scope.tasks));
             }, function errorHandling(response) {
                 console.log(response);
@@ -46,6 +50,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             var i = $scope.tasks.indexOf(task);
             if (i < 0) console.log("not found");
             $scope.tasks.splice(i, 1);
+            //Update the filtered groups
+            $scope.showGroup($scope.filterGroup);
             console.log($scope.tasks);
         }, function errorHandling(response) {
             console.log(response);
@@ -64,5 +70,31 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             }, function errorHandling(response) {
                 console.log(response);
             });
+    };
+
+    $scope.showGroup = function(group) {
+        $scope.filterGroup = group;
+        var newShow = [];
+        $scope.tasks.forEach(function(elem, index) {
+            if (elem.group == group) {
+                newShow.push(elem);
+            }
+        });
+        $scope.showList = newShow;
+    };
+
+    $scope.showAllGroups = function() {
+        $scope.showList = $scope.tasks;
+    };
+
+    $scope.filterDistinct = function(set){
+        checkSet = [];
+        set.forEach(function(elem, index){
+            if(!checkSet.includes(elem.group)){
+                checkSet.push(elem.group);
+            }
+        });
+        console.log(JSON.stringify(checkSet));
+        return checkSet;
     };
 }]);
