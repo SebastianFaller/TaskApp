@@ -2,3 +2,12 @@
 .dropdown-menu{
     right: 0;
 }
+#dropdownID{
+    text-align: right;
+}
+#hiddenButton{
+    visibility: hidden;
+}
+.myInline{
+    display: inline-block;
+}

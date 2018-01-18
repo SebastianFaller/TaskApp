@@ -1,4 +1,4 @@
-angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope', '$http', '$window', function($scope, $rootScope, $http, $window) {
     $scope.tasks = [];
     $scope.line = "Insert task";
     $scope.lineGroup = "Insert Group";
@@ -9,7 +9,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
         console.log(res.data);
         if (res.data.errorSet != null && res.data.errorSet.length > 0) {
             alert(res.data.errorSet.pop());
-            //TODO change navbar user
+            $rootScope.loggedUser = "";
+            $window.sessionStorage.loggedUser = "";
             $window.location.href = "#!/loginPage";
         } else {
             $scope.tasks = res.data.tasks;
@@ -57,7 +58,6 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
 
             })
             .then(function(response) {
-                //TODO really call by ref?
                 doneTask.done = true;
 
                 console.log("task " + JSON.stringify(doneTask) + " is done!");
