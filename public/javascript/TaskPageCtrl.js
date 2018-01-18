@@ -1,6 +1,8 @@
 angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.tasks = [];
     $scope.line = "";
+    $scope.lineGroup = "";
+
     $http.post("/gettasks", {
         token: $window.sessionStorage.token
     }).then(function(res) {
@@ -15,19 +17,25 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
 
     });
     $scope.addTask = function() {
+        newTask = {
+            task: $scope.line,
+            group: $scope.lineGroup
+        };
         $http.post("/addtask", {
-                task: $scope.line,
+                task: newTask,
                 token: $window.sessionStorage.token
 
             })
             .then(function(response) {
-                $scope.tasks.push($scope.line);
+                $scope.tasks.push(newTask);
+                console.log("New tasks " + JSON.stringify($scope.tasks));
             }, function errorHandling(response) {
                 console.log(response);
             });
 
     };
     $scope.deleteTask = function(task) {
+        console.log("Delet sended with task: " + JSON.stringify(task));
         $http.post("/deletetask", {
             toDelete: task,
             token: $window.sessionStorage.token
@@ -39,5 +47,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$wi
         }, function errorHandling(response) {
             console.log(response);
         });
+    };
+    $scope.doneTask = function(task) {
+        console.log("task " + JSON.stringify(task) + " is done!");
     };
 }]);

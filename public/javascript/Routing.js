@@ -21,6 +21,15 @@ routingApp.config(['$routeProvider',
     }
 ]);
 
-routingApp.controller('NavCtrl', ['$scope', function($scope) {
+routingApp.controller('NavCtrl', ['$scope', '$rootScope', '$window', function($scope, $rootScope, $window) {
+    //Initialize navbar user. 
+    $rootScope.loggedUser = $window.sessionStorage.loggedUser;
+
+    $scope.logout = function() {
+        $rootScope.loggedUser = "";
+        $window.sessionStorage.loggedUser = "";
+        delete $window.sessionStorage.token;
+        $window.location.href = "#!/loginPage";
+    };
 
 }]);

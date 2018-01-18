@@ -2,15 +2,30 @@
 <div ng-app="TaskApp" ng-controller="TaskPageCtrl" id="page1" class="">
 	<div id="formDiv" class="form-group">
 		<label for="task">Add a new task:</label>
-		<input ng-model="line" type="text" class="form-control" id="taskid">	
+		<input ng-model="line" type="text" class="form-control" id="taskid">
+		<input ng-model="lineGroup" type="text" class="form-control" id="taskidGroup">		
 	</div>
 	<button type="submit" class="btn btn-primary btn-block" ng-click="addTask()">Submit</button>
-
-	<ul class="list-group" id="resultList">
-		<li ng-repeat="x in tasks"  class="list-group-item">
-			<label>{{ x }}</label>	
-				<button type="button" class="btn btn-danger pull-right" ng-click="deleteTask(x)">Delete</button>
-		</li>
-	</ul> 
-</div>
+	<table class="table">
+		<thead>
+			<th>Tasks</th>
+			<th>Group</th>
+			<th></th>
+		</thead>
+		<tr ng-repeat="x in tasks">
+			<td id="taskCol">{{x.task}}</td>
+			<td id="groupCol">{{x.group}}</td>
+			<td id="buttonCol">
+				<div class="dropdown" style="text-align: right">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span>
+						<span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a ng-click="doneTask(x)">Done</a></li>
+							<li><a ng-click="deleteTask(x)">Delete</a></li>
+						</ul>
+					</div> 
+				</td>
+			</tr>
+		</table>
+	</div>
 

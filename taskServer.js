@@ -130,7 +130,6 @@ app.post('/gettasks', function(req, res) {
                         result.forEach(function(item, index) {
                             taskArray.push(item.task);
                         });
-
                         res.send({
                             tasks: taskArray,
                             errorSet: errSet

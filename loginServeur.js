@@ -61,8 +61,8 @@ app.post('/login', function(req, res) {
                         errorSet.push("USER_NOT_EXIST");
                     } else{
                         //Provide token
-                        //token is valid 4 Minutes
-                        usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 240});
+                        //token is valid 40 Minutes
+                        usertoken = jwt.sign({user:username}, 'super_secret_passsword123',{expiresIn: 2400});
                     }
                 } else{
                     succ = false;
