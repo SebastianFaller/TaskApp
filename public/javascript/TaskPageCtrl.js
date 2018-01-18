@@ -1,7 +1,7 @@
 angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
     $scope.tasks = [];
-    $scope.line = "";
-    $scope.lineGroup = "";
+    $scope.line = "Insert task";
+    $scope.lineGroup = "Insert Group";
 
     $http.post("/gettasks", {
         token: $window.sessionStorage.token
