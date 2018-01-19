@@ -3,6 +3,11 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
+const {
+    celebrate,
+    Joi,
+    errors
+} = require('celebrate');
 
 
 var httpPort = 8091;
@@ -18,8 +23,16 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+//For the use of celebrate
+app.use(errors());
 
-app.post('/addtask', function(req, res) {
+
+app.post('/addtask', celebrate({
+    body: Joi.object({
+        task: Joi.object().required(),
+        token: Joi.string().required(),
+    })
+}), function(req, res) {
     var errSet = [];
     var token = req.body.token;
 
@@ -55,10 +68,15 @@ app.post('/addtask', function(req, res) {
     });
 });
 
-app.post("/deletetask", function(req, res) {
+app.post("/deletetask", celebrate({
+    body: Joi.object({
+        task: Joi.object().required(),
+        token: Joi.string().required(),
+    })
+}), function(req, res) {
     var errSet = [];
     var token = req.body.token;
-    console.log("Delet rec tok "+token);
+    console.log("Delet rec tok " + token);
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
         if (err) {
             //Token is not valid
@@ -96,10 +114,15 @@ app.post("/deletetask", function(req, res) {
 });
 
 
-app.post("/taskdone", function(req, res) {
+app.post("/taskdone", celebrate({
+    body: Joi.object({
+        task: Joi.object().required(),
+        token: Joi.string().required(),
+    })
+}), function(req, res) {
     var errSet = [];
     var token = req.body.token;
-    console.log("Done rec tok "+token);
+    console.log("Done rec tok " + token);
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
         if (err) {
             //Token is not valid
@@ -126,8 +149,12 @@ app.post("/taskdone", function(req, res) {
                     //clone the object
                     newTask = JSON.parse(JSON.stringify(req.body.task));
                     newTask.done = true;
-                    console.log("Here is the new task "+JSON.stringify(newTask));
-                    newValue = {$set: {task: newTask}};
+                    console.log("Here is the new task " + JSON.stringify(newTask));
+                    newValue = {
+                        $set: {
+                            task: newTask
+                        }
+                    };
                     db.collection("taskCollection").updateOne(query, newValue, function(err, obj) {
                         if (err) throw err;
                     });
@@ -140,7 +167,11 @@ app.post("/taskdone", function(req, res) {
 });
 
 
-app.post('/gettasks', function(req, res) {
+app.post('/gettasks', celebrate({
+    body: Joi.object({
+        token: Joi.string().required(),
+    })
+}), function(req, res) {
     var errSet = [];
     var token = req.body.token;
 

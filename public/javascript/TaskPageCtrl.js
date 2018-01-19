@@ -2,6 +2,7 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
     $scope.tasks = [];
     $scope.line = "Insert task";
     $scope.lineGroup = "Insert Group";
+    $scope.filterGroup = "";
 
     $http.post("/gettasks", {
         token: $window.sessionStorage.token
@@ -35,6 +36,7 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
                 $scope.tasks.push(newTask);
                 //Update the filtered groups
                 $scope.showGroup($scope.filterGroup);
+
                 console.log("New tasks " + JSON.stringify($scope.tasks));
             }, function errorHandling(response) {
                 console.log(response);
@@ -73,24 +75,29 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
     };
 
     $scope.showGroup = function(group) {
-        $scope.filterGroup = group;
-        var newShow = [];
-        $scope.tasks.forEach(function(elem, index) {
-            if (elem.group == group) {
-                newShow.push(elem);
-            }
-        });
-        $scope.showList = newShow;
+        if (group == "") {
+            $scope.showAllGroups();
+        } else {
+            $scope.filterGroup = group;
+            var newShow = [];
+            $scope.tasks.forEach(function(elem, index) {
+                if (elem.group == group) {
+                    newShow.push(elem);
+                }
+            });
+            $scope.showList = newShow;
+        }
     };
 
     $scope.showAllGroups = function() {
         $scope.showList = $scope.tasks;
+        $scope.filterGroup = "";
     };
 
-    $scope.filterDistinct = function(set){
+    $scope.filterDistinct = function(set) {
         checkSet = [];
-        set.forEach(function(elem, index){
-            if(!checkSet.includes(elem.group)){
+        set.forEach(function(elem, index) {
+            if (!checkSet.includes(elem.group)) {
                 checkSet.push(elem.group);
             }
         });

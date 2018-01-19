@@ -5,6 +5,11 @@ var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var sjcl = require('./sjcl/sjcl.js');
 var randomstring = require("randomstring");
+const {
+    celebrate,
+    Joi,
+    errors
+} = require('celebrate');
 
 
 var httpPort = 8090;
@@ -24,77 +29,92 @@ app.use(bodyParser.urlencoded({
 //authorize access to public directory to server html, css, js
 app.use(express.static(path.join(__dirname, 'public')));
 
+//For the use of celebrate
+app.use(errors());
 
 //handle request of login
-app.post('/login', function(req, res) {
-    //declaration response part
-    var succ = true;
-    var errorSet = [];
-    var usertoken;
+app.post('/login',
+    //sanitize for nosql injection
+    celebrate({
+        body: Joi.object().keys({
+            name: Joi.string().required(),
+            pwd: Joi.string().required(),
+        })
+    }),
+    function(req, res) {
+        //declaration response part
+        var succ = true;
+        var errorSet = [];
+        var usertoken;
 
-    //get param
-    var username = req.body.name;
-    var password = req.body.pwd;
+        //get param
+        var username = req.body.name;
+        var password = req.body.pwd;
 
-    //check param
-    if (!username || !password) {
-        succ = false;
-        errorSet.push("MISSING_PARAMS");
-    }
-    if (succ) {
-        //insert here
-        mongoClient.connect(url, function(err, db) {
-            if (err) {
-                throw err;
-            }
-
-            query = {
-                name: username
-            };
-
-            db.collection("userCollection").find(query).toArray(function(err, result) {
+        //check param
+        if (!username || !password) {
+            succ = false;
+            errorSet.push("MISSING_PARAMS");
+        }
+        if (succ) {
+            //insert here
+            mongoClient.connect(url, function(err, db) {
                 if (err) {
                     throw err;
                 }
-                if (result != null && result.length > 0) {
-                    //console.log("Ergebnis " + result.pop().password);
-                    resultObj = result.pop();
-                    //salt password to compare with salted pwd in Database
-                    pwdSalt = resultObj.salt;
-                    saltedPwd = JSON.stringify(sjcl.hash.sha256.hash(password + pwdSalt));
-                    if (resultObj.password != saltedPwd) {
-                        succ = false;
-                        errorSet.push("USER_NOT_EXIST");
-                    } else{
-                        //Provide token
-                        //token is valid 40 Minutes
-                        usertoken = jwt.sign({
-                            user: username
-                        }, 'super_secret_passsword123', {
-                            expiresIn: 2400
-                        });
-                    }
-                } else {
-                    succ = false;
-                }
-                var link = "#!/taskPage";
 
-                db.close();
-                //send response
-                res.send({
-                    success: succ,
-                    errorSet: errorSet,
-                    hlink: link,
-                    token: usertoken
+                query = {
+                    name: username
+                };
+
+                db.collection("userCollection").find(query).toArray(function(err, result) {
+                    if (err) {
+                        throw err;
+                    }
+                    if (result != null && result.length > 0) {
+                        //console.log("Ergebnis " + result.pop().password);
+                        resultObj = result.pop();
+                        //salt password to compare with salted pwd in Database
+                        pwdSalt = resultObj.salt;
+                        saltedPwd = JSON.stringify(sjcl.hash.sha256.hash(password + pwdSalt));
+                        if (resultObj.password != saltedPwd) {
+                            succ = false;
+                            errorSet.push("USER_NOT_EXIST");
+                        } else {
+                            //Provide token
+                            //token is valid 40 Minutes
+                            usertoken = jwt.sign({
+                                user: username
+                            }, 'super_secret_passsword123', {
+                                expiresIn: 2400
+                            });
+                        }
+                    } else {
+                        succ = false;
+                    }
+                    var link = "#!/taskPage";
+
+                    db.close();
+                    //send response
+                    res.send({
+                        success: succ,
+                        errorSet: errorSet,
+                        hlink: link,
+                        token: usertoken
+                    });
                 });
             });
-        });
-    }
-});
+        }
+    });
 
 
 //Enregistrate new user or say it already exists.
-app.post('/registrate', function(req, res) {
+app.post('/registrate', celebrate({
+    body: Joi.object().keys({
+        name: Joi.string().required(),
+        pwd: Joi.string().required(),
+    })
+}), function(req, res) {
     //declaration response part
     var errSet = [];
 
