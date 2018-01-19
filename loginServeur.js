@@ -25,10 +25,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-//TODO Check if neccessary in silos
-//authorize access to public directory to server html, css, js
-app.use(express.static(path.join(__dirname, 'public')));
-
 //For the use of celebrate
 app.use(errors());
 
@@ -72,7 +68,6 @@ app.post('/login',
                         throw err;
                     }
                     if (result != null && result.length > 0) {
-                        //console.log("Ergebnis " + result.pop().password);
                         resultObj = result.pop();
                         //salt password to compare with salted pwd in Database
                         pwdSalt = resultObj.salt;
@@ -143,8 +138,6 @@ app.post('/registrate', celebrate({
             }
             if (result != null && result.length > 0) {
                 errSet.push("User already exists");
-                console.log("Stuff " + errSet);
-                console.log("Refused to create User");
             }
             //if everything went good so far, create the user
             if (errSet.length <= 0) {
@@ -169,7 +162,7 @@ app.post('/registrate', celebrate({
     });
 });
 
-
+//Only returns true if password has at least length 10 and contains a number and a letter
 function checkValidity(password) {
     var regex = "(\S*[0-9]+\S*[A-Za-z]+\S*)|(\S*[A-Za-z]+\S*[0-9]+\S*)";
     return password.length >= 10 && password.match(regex);

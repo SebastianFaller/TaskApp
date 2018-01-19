@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 //For the use of celebrate
 app.use(errors());
 
-
+//Handles the request to add a new task for a specific user.
 app.post('/addtask', celebrate({
     body: Joi.object({
         task: Joi.object().required(),
@@ -40,12 +40,12 @@ app.post('/addtask', celebrate({
         if (err) {
             //Token is not valid
             errSet.push("Please log in to do this request");
-            console.log("Token is baaaad");
             res.send({
                 errorSet: errSet
             });
         } else {
-            //token is valid
+            //token is valid.
+            //Get the username which is signed from token. (Not encrypted!)
             var username = jwt.decode(token).user;
             var recievedTask = req.body.task;
             mongoClient.connect(url, function(err, db) {
@@ -61,13 +61,12 @@ app.post('/addtask', celebrate({
                     db.close();
                 });
             });
-
-            console.log(recievedTask);
             res.send();
         }
     });
 });
 
+//Handles the request to delete task for a specific user.
 app.post("/deletetask", celebrate({
     body: Joi.object({
         task: Joi.object().required(),
@@ -76,28 +75,24 @@ app.post("/deletetask", celebrate({
 }), function(req, res) {
     var errSet = [];
     var token = req.body.token;
-    console.log("Delet rec tok " + token);
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
         if (err) {
             //Token is not valid
             errSet.push("Please log in to see this page");
-            console.log("Token is baaaad in delete");
             res.send({
                 errorSet: errSet
             });
         } else {
             //token is valid
-            var username = jwt.decode(token).user;
+            //Get the username which is signed from token. (Not encrypted!)
 
-            console.log("Token is goood");
+            var username = jwt.decode(token).user;
             mongoClient.connect(url, function(err, db) {
                 if (err) {
                     errSet.push("INTERNAL_ERROR");
                     console.log("Unable to connect to mongoDB: " + err);
                 } else {
-
-                    //alles gut
-                    //
+                    //Ready to query
                     query = {
                         task: req.body.toDelete,
                         user: username
@@ -113,7 +108,7 @@ app.post("/deletetask", celebrate({
     });
 });
 
-
+//Handles the request to mark a certain task as done
 app.post("/taskdone", celebrate({
     body: Joi.object({
         task: Joi.object().required(),
@@ -122,12 +117,10 @@ app.post("/taskdone", celebrate({
 }), function(req, res) {
     var errSet = [];
     var token = req.body.token;
-    console.log("Done rec tok " + token);
     jwt.verify(token, 'super_secret_passsword123', function(err, decoded) {
         if (err) {
             //Token is not valid
             errSet.push("Please log in to see this page");
-            console.log("Token is baaaad in done");
             res.send({
                 errorSet: errSet
             });
@@ -135,7 +128,6 @@ app.post("/taskdone", celebrate({
             //token is valid
             var username = jwt.decode(token).user;
 
-            console.log("Token is goood");
             mongoClient.connect(url, function(err, db) {
                 if (err) {
                     errSet.push("INTERNAL_ERROR");
@@ -149,7 +141,6 @@ app.post("/taskdone", celebrate({
                     //clone the object
                     newTask = JSON.parse(JSON.stringify(req.body.task));
                     newTask.done = true;
-                    console.log("Here is the new task " + JSON.stringify(newTask));
                     newValue = {
                         $set: {
                             task: newTask
@@ -166,7 +157,7 @@ app.post("/taskdone", celebrate({
     });
 });
 
-
+//Handles the request to send all tasks of one specific user.
 app.post('/gettasks', celebrate({
     body: Joi.object({
         token: Joi.string().required(),
@@ -179,7 +170,6 @@ app.post('/gettasks', celebrate({
         if (err) {
             //Token is not valid
             errSet.push("Please log in to see this page");
-            console.log("Token is baaaad");
             res.send({
                 tasks: {},
                 errorSet: errSet
@@ -187,8 +177,6 @@ app.post('/gettasks', celebrate({
         } else {
             //token is valid
             var username = jwt.decode(token).user;
-
-            console.log("Token is goood");
             mongoClient.connect(url, function(err, db) {
                 if (err) {
                     //TODO do everywhere like that instead of throw err;
