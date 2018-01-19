@@ -4,10 +4,10 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
     $scope.lineGroup = "Insert Group";
     $scope.filterGroup = "";
 
+    //Sends server message to retrive all stored tasks of a user
     $http.post("/gettasks", {
         token: $window.sessionStorage.token
     }).then(function(res) {
-        console.log(res.data);
         if (res.data.errorSet != null && res.data.errorSet.length > 0) {
             alert(res.data.errorSet.pop());
             $rootScope.loggedUser = "";
@@ -21,6 +21,8 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
     }, function(err) {
 
     });
+
+    //Sends server message to delete
     $scope.addTask = function() {
         newTask = {
             task: $scope.line,
@@ -37,24 +39,23 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
                 //Update the filtered groups
                 $scope.showGroup($scope.filterGroup);
 
-                console.log("New tasks " + JSON.stringify($scope.tasks));
             }, function errorHandling(response) {
                 console.log(response);
             });
 
     };
+
+    //Sends server message to delete a task
     $scope.deleteTask = function(task) {
-        console.log("Delet sended with task: " + JSON.stringify(task));
         $http.post("/deletetask", {
             toDelete: task,
             token: $window.sessionStorage.token
         }).then(function(response) {
             var i = $scope.tasks.indexOf(task);
-            if (i < 0) console.log("not found");
+            //if (i < 0) console.log("not found");
             $scope.tasks.splice(i, 1);
             //Update the filtered groups
             $scope.showGroup($scope.filterGroup);
-            console.log($scope.tasks);
         }, function errorHandling(response) {
             console.log(response);
         });
@@ -68,12 +69,12 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             .then(function(response) {
                 doneTask.done = true;
 
-                console.log("task " + JSON.stringify(doneTask) + " is done!");
             }, function errorHandling(response) {
                 console.log(response);
             });
     };
 
+    //Prints only the tasks of the given group
     $scope.showGroup = function(group) {
         if (group == "") {
             $scope.showAllGroups();
@@ -89,11 +90,13 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
         }
     };
 
+    //Prints all task without regard to group
     $scope.showAllGroups = function() {
         $scope.showList = $scope.tasks;
         $scope.filterGroup = "";
     };
 
+    //Filters grouplist to get only distinct values
     $scope.filterDistinct = function(set) {
         checkSet = [];
         set.forEach(function(elem, index) {
@@ -101,7 +104,6 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
                 checkSet.push(elem.group);
             }
         });
-        console.log(JSON.stringify(checkSet));
         return checkSet;
     };
 }]);

@@ -1,11 +1,11 @@
 angular.module('routingApp').controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$window', function($scope, $rootScope, $http, $window) {
+    //Submits the enterd user data to the server and handles response
     $scope.formSubmit = function() {
         $http.post("https://localhost:8089/login/", {
                 name: $scope.name,
                 pwd: $scope.pwd
             })
             .then(function(response) {
-                console.log("Hallo" + response.data.success);
                 if (!response.data.success) {
                     //erase token if login failed and clear navbar username
                     delete $window.sessionStorage.token;
@@ -18,7 +18,6 @@ angular.module('routingApp').controller('LoginCtrl', ['$scope', '$rootScope', '$
                     //Set navbar user
                     $rootScope.loggedUser = $scope.name;
                     $window.sessionStorage.loggedUser = $scope.name;
-                    console.log("Empfangener token: " + $window.sessionStorage.token);
                     //go to taskpage
                     $window.location.href = response.data.hlink;
                 }

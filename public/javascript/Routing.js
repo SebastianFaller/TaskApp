@@ -25,6 +25,7 @@ routingApp.controller('NavCtrl', ['$scope', '$rootScope', '$window', function($s
     //Initialize navbar user. 
     $rootScope.loggedUser = $window.sessionStorage.loggedUser;
 
+    //Deletes the token and resets user in navbar
     $scope.logout = function() {
         $rootScope.loggedUser = "";
         $window.sessionStorage.loggedUser = "";
