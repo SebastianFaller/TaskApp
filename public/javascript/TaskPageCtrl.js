@@ -37,6 +37,7 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
             .then(function(response) {
                 $scope.tasks.push(newTask);
                 //Update the filtered groups
+                $scope.groupList = $scope.filterDistinct($scope.tasks);
                 $scope.showGroup($scope.filterGroup);
 
             }, function errorHandling(response) {
@@ -76,7 +77,7 @@ angular.module('routingApp').controller('TaskPageCtrl', ['$scope', '$rootScope',
 
     //Prints only the tasks of the given group
     $scope.showGroup = function(group) {
-        if (group == "") {
+        if (!group || group == "" || group == undefined) {
             $scope.showAllGroups();
         } else {
             $scope.filterGroup = group;

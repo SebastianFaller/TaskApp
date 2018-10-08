@@ -69,7 +69,7 @@ app.post('/addtask', celebrate({
 //Handles the request to delete task for a specific user.
 app.post("/deletetask", celebrate({
     body: Joi.object({
-        task: Joi.object().required(),
+        toDelete: Joi.object().required(),
         token: Joi.string().required(),
     })
 }), function(req, res) {

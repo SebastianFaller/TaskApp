@@ -28,7 +28,6 @@ var options = {
 	cert: fs.readFileSync('encryption/server.crt')
 };
 
-
 //authorize access to public directory to server html, css, js
 app.use(express.static(path.join(__dirname, 'public')));
 
